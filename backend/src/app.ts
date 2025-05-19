@@ -15,9 +15,10 @@ import cors from 'cors';
 const app: Application = express();
 /**
  * 서버가 Render 등 클라우드 환경에서 동작할 때 반드시 process.env.PORT를 우선 사용해야 외부 접근이 가능합니다.
+ * 로컬 개발 시에는 5000번 포트로 fallback.
  * @see https://render.com/docs/web-services#port-binding
  */
-const PORT: number = process.env.PORT ? Number(process.env.PORT) : 10000;
+const PORT: number = Number(process.env.PORT) || 5000;
 
 // CORS 설정: 개발은 전체 허용, 운영은 도메인 제한
 if (process.env.NODE_ENV === 'production') {
