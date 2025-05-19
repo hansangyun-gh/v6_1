@@ -13,7 +13,11 @@ import path from 'path';
 import cors from 'cors';
 
 const app: Application = express();
-const PORT: number = Number(process.env.PORT) || 5000;
+/**
+ * 서버가 Render 등 클라우드 환경에서 동작할 때 반드시 process.env.PORT를 우선 사용해야 외부 접근이 가능합니다.
+ * @see https://render.com/docs/web-services#port-binding
+ */
+const PORT: number = process.env.PORT ? Number(process.env.PORT) : 10000;
 
 // CORS 설정: 개발은 전체 허용, 운영은 도메인 제한
 if (process.env.NODE_ENV === 'production') {
@@ -74,8 +78,11 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 if (process.env.NODE_ENV !== 'test') {
+  /**
+   * 서버 실행 (Render 등에서는 PORT 환경변수 필수)
+   */
   app.listen(PORT, () => {
-    console.log(`서버 실행 중: http://localhost:${PORT}`);
+    console.log(`서버 실행 중: http://localhost:${PORT} (env: ${process.env.NODE_ENV})`);
   });
 }
 
