@@ -1,0 +1,10 @@
+# 백엔드 DevOps/보안 자동화 PRD
+
+1. .env 환경변수 파일로 LLM API 키, DB 시크릿 등 민감 정보 분리 관리
+2. 커밋 린트(husky/commitlint)로 커밋 메시지 포맷 통일 및 PR 자동 요약
+3. Jest, supertest 기반 API 테스트 및 커버리지 자동화
+4. render.yaml 등으로 배포 자동화(환경별 분리)
+5. 입력 데이터 검증, XSS/SQL Injection 방어 등 보안 강화
+6. Swagger(OpenAPI) 기반 API 문서 자동화
+7. .env.example, .gitignore 등 시크릿/환경변수 관리 정책 적용
+8. PR/커밋/배포 자동화 스크립트 및 템플릿 적용 
