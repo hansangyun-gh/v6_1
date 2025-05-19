@@ -4,9 +4,9 @@ FROM node:20-alpine
 # 작업 디렉터리 생성
 WORKDIR /app
 
-# 의존성 복사 및 설치 (devDependencies, 모든 npm 스크립트 무시)
+# 의존성 복사 및 설치 (devDependencies 포함)
 COPY package*.json ./
-RUN npm install --omit=dev --ignore-scripts
+RUN npm install
 
 # 소스 복사
 COPY . .
