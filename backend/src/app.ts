@@ -81,6 +81,7 @@ if (process.env.NODE_ENV !== 'test') {
   /**
    * 서버 실행 (Render 등에서는 PORT 환경변수 필수)
    */
+  console.log('process.env.PORT:', process.env.PORT); // Render 환경에서 실제 PORT 값 확인용
   app.listen(PORT, () => {
     console.log(`서버 실행 중: http://localhost:${PORT} (env: ${process.env.NODE_ENV})`);
   });
