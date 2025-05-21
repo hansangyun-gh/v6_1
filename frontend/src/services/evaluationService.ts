@@ -2,7 +2,6 @@
  * LLM 평가 서비스
  * @description 보고서 파일과 프롬프트, 모델 정보를 받아 LLM 평가 결과를 반환
  */
-import axios from 'axios';
 import { EvaluationRequest, EvaluationResponse } from '../types/interfaces';
 
 /**
@@ -27,12 +26,18 @@ export async function submitEvaluation(data: EvaluationRequest): Promise<Evaluat
     });
     formData.append('prompt', data.prompt);
     formData.append('model', data.model);
-    const response = await axios.post('/api/evaluate', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await fetch('/api/evaluate', {
+      method: 'POST',
+      body: formData,
     });
-    return response.data;
-  } catch (error: any) {
-    // 서버/네트워크 에러 메시지 명확히 전달
-    throw new Error(error?.response?.data?.error || error.message || 'LLM 평가 요청 실패');
+    if (!response.ok) {
+      // 서버에서 에러 메시지를 내려주는 경우
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData?.error || response.statusText || 'LLM 평가 요청 실패');
+    }
+    return await response.json();
+  } catch (error: unknown) {
+    if (error instanceof Error) throw error;
+    throw new Error('LLM 평가 요청 실패');
   }
 } 

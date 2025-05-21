@@ -2,7 +2,6 @@
  * 프롬프트 서비스 (RESTful API 연동)
  * @description 프롬프트를 서버에 저장/불러오기/삭제/수정
  */
-import axios from 'axios';
 import { Prompt } from '../types/interfaces';
 
 const API_BASE = '/api/prompts';
@@ -12,10 +11,16 @@ const API_BASE = '/api/prompts';
  */
 export async function fetchPrompts(): Promise<Prompt[]> {
   try {
-    const res = await axios.get(API_BASE);
-    return res.data.prompts;
-  } catch (error: any) {
-    throw new Error(error.response?.data?.error || '프롬프트 목록 조회 실패');
+    const res = await fetch(API_BASE);
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData?.error || res.statusText || '프롬프트 목록 조회 실패');
+    }
+    const data = await res.json();
+    return data.prompts;
+  } catch (error: unknown) {
+    if (error instanceof Error) throw error;
+    throw new Error('프롬프트 목록 조회 실패');
   }
 }
 
@@ -24,9 +29,18 @@ export async function fetchPrompts(): Promise<Prompt[]> {
  */
 export async function savePrompt(prompt: Prompt): Promise<void> {
   try {
-    await axios.post(API_BASE, prompt);
-  } catch (error: any) {
-    throw new Error(error.response?.data?.error || '프롬프트 저장 실패');
+    const res = await fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(prompt),
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData?.error || res.statusText || '프롬프트 저장 실패');
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) throw error;
+    throw new Error('프롬프트 저장 실패');
   }
 }
 
@@ -35,10 +49,16 @@ export async function savePrompt(prompt: Prompt): Promise<void> {
  */
 export async function fetchPromptByName(name: string): Promise<Prompt> {
   try {
-    const res = await axios.get(`${API_BASE}/${encodeURIComponent(name)}`);
-    return res.data.prompt;
-  } catch (error: any) {
-    throw new Error(error.response?.data?.error || '프롬프트 불러오기 실패');
+    const res = await fetch(`${API_BASE}/${encodeURIComponent(name)}`);
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData?.error || res.statusText || '프롬프트 불러오기 실패');
+    }
+    const data = await res.json();
+    return data.prompt;
+  } catch (error: unknown) {
+    if (error instanceof Error) throw error;
+    throw new Error('프롬프트 불러오기 실패');
   }
 }
 
@@ -47,9 +67,16 @@ export async function fetchPromptByName(name: string): Promise<Prompt> {
  */
 export async function deletePrompt(name: string): Promise<void> {
   try {
-    await axios.delete(`${API_BASE}/${encodeURIComponent(name)}`);
-  } catch (error: any) {
-    throw new Error(error.response?.data?.error || '프롬프트 삭제 실패');
+    const res = await fetch(`${API_BASE}/${encodeURIComponent(name)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData?.error || res.statusText || '프롬프트 삭제 실패');
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) throw error;
+    throw new Error('프롬프트 삭제 실패');
   }
 }
 
@@ -58,8 +85,17 @@ export async function deletePrompt(name: string): Promise<void> {
  */
 export async function updatePrompt(name: string, value: string): Promise<void> {
   try {
-    await axios.put(`${API_BASE}/${encodeURIComponent(name)}`, { value });
-  } catch (error: any) {
-    throw new Error(error.response?.data?.error || '프롬프트 수정 실패');
+    const res = await fetch(`${API_BASE}/${encodeURIComponent(name)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value }),
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData?.error || res.statusText || '프롬프트 수정 실패');
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) throw error;
+    throw new Error('프롬프트 수정 실패');
   }
 } 
